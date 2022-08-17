@@ -11,6 +11,11 @@ jobs:
       with:
         fetch-depth: 0
     
+    - name: Use .NET 6
+      uses: actions/setup-dotnet@2
+      with:
+        dotnet-version: 6.0.x    
+
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.7
       with:
@@ -33,10 +38,7 @@ jobs:
       with:
         name: deployment
         path: ./deployment
-    
-    - name: Use .NET 6
-    
-    
+        
     - name: Configure Docker metadata
       id: metadata
       uses: docker/metadata-action@v3
