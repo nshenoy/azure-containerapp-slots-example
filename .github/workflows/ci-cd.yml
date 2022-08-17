@@ -21,7 +21,8 @@ jobs:
       with:
         versionSpec: '5.x'
     
-    - name: Determine Version
+    - name: Run GitVersion
+      id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.7
       with:
         useConfigFile: true
@@ -38,20 +39,7 @@ jobs:
       with:
         name: deployment
         path: ./deployment
-        
-    - name: Configure Docker metadata
-      id: metadata
-      uses: docker/metadata-action@v3
-      with:
-        images: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/example-api
-          ghcr.io/${{ github.repository_owner }}/example-api
-        tags: |
-          type=edge,branch=main
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
-          
+                  
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
       
@@ -72,6 +60,6 @@ jobs:
         file: ./Dockerfile
         context: ./
         platforms: linux/amd64,linux/arm64
-        tags: ${{ steps.metadata.outputs.tags }}
+        tags: ${{ steps.gitversion.outputs.semVer }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
