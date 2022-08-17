@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerAppEnvName": {
+      "value": "#{containerAppEnvName}"
+    },
+    "containerAppName": {
+      "value": "#{containerAppName}"
+    },
+    "containerImageName": {
+      "value": "#{containerImageName}"
+    },
+    "containerNamespace": {
+      "value": "#{containerNamespace}"
+    },
+    "containerRevisionSuffix": {
+      "value": "#{containerRevisionSuffix}"
+    },
+    "containerRegistry": {
+      "value": "#{containerRegistry}"
+    },
+    "containerRegistryResourceGroup": {
+      "value": "#{containerRegistryResourceGroup}"
+    },
+    "containerRegistrySubscriptionId": {
+      "value": "#{containerRegistrySubscriptionId}"
+    },
+    "containerAppProductionRevision": {
+      "value": "#{containerAppProductionRevision}"
+    },
+    "storageAccountName": {
+      "value": "#{storageAccountName}"
+    },
+    "SomeSection__SomeSensitiveString": {
+      "value": "#{SomeSection__SomeSensitiveString}"
+    },
+    "SomeSection__SomeOtherSetting": {
+      "value": "#{SomeSection__SomeOtherSetting}"
+    }
+  }
+}
