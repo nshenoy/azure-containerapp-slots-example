@@ -15,6 +15,12 @@ jobs:
         bicepFilePath: ./deployment/template.bicep
         outputFilePath: ./deployment/template.json
         
+    - name: Upload ARM templates
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: arm
+        path: ./arm
+        
     - name: Configure Docker metadata
       id: metadata
       uses: docker/metadata-action@v3
@@ -39,7 +45,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Build & push image
       uses: docker/build-push-action@v2
