@@ -61,6 +61,7 @@ jobs:
         context: ./
         platforms: linux/amd64,linux/arm64
         tags: ${{ steps.gitversion.outputs.semVer }}
-        arguments: '--build-arg version=${{ steps.gitversion.outputs.semVer }}' 
+        build-args: |
+          version=${{ steps.gitversion.outputs.semVer }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
