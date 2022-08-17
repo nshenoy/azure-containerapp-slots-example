@@ -58,7 +58,7 @@ jobs:
       with:
         push: true
         file: ./Dockerfile
-        context: ./
+        context: .
         platforms: linux/amd64,linux/arm64
         tags: ${{ steps.gitversion.outputs.semVer }}
         build-args: |
