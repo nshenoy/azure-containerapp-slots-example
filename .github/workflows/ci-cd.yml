@@ -25,6 +25,7 @@ jobs:
         configFilePath: './GitVersion.yml'
 
     - name: bicep build template.bicep
+      uses: Azure/bicep-build-action@v1.0.1
       with:
         bicepFilePath: ./deployment/template.bicep
         outputFilePath: ./deployment/template.json
