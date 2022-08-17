@@ -15,11 +15,11 @@ jobs:
         bicepFilePath: ./deployment/template.bicep
         outputFilePath: ./deployment/template.json
         
-    - name: Upload ARM templates
+    - name: Upload deployment templates
       uses: actions/upload-artifact@v3.1.0
       with:
-        name: arm
-        path: ./arm
+        name: deployment
+        path: ./deployment
         
     - name: Configure Docker metadata
       id: metadata
