@@ -84,13 +84,36 @@ jobs:
         enable-AzPSSession: true
       if: ${{ false }}
 
-    - name: Azure CLI - Get Revision with Production Label
-      uses: azure/cli@v1
+    - name: Get Revision with Production Label
+      uses: azure/powershell@v1
       with:
-        inlineScript: .\deployment\Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
+        inlineScript: .\Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
         azPSVersion: latest
       if: ${{ false }}
+
+    - name: Replace Tokens in parameters.json
+      uses: cschleiden/replace-tokens@v1.1
+      with:
+        tokenPrefix: '#{'
+        tokenSuffix: '}'
+        files: 'parameters.json'
         
+    - name: Azure Template Deployment
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ secrets.Azure.ResourceGroupName }}
+        template: ./template.json
+        parameters: ./parameters.json
+        deploymentMode: Incremental
+      if: ${{ false }}
+
+    - name: Set Staging Label on Latest Revision
+      uses: azure/powershell@v1
+      with:
+        inlineScript: .\Set-ContainerAppLabel.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
+        azPSVersion: latest
+      if: ${{ false }}
+
   production:
     runs-on: ubuntu-latest
     needs: [build, staging]
@@ -108,10 +131,10 @@ jobs:
         enable-AzPSSession: true
       if: ${{ false }}
 
-    - name: Azure CLI - Get Revision with Production Label
-      uses: azure/cli@v1
+    - name: Get Revision with Production Label
+      uses: azure/powershell@v1
       with:
-        inlineScript: .\deployment\Swap-Revisions.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
+        inlineScript: .\Swap-Revisions.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
         azPSVersion: latest
       if: ${{ false }}
       
