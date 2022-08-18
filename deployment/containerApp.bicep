@@ -7,10 +7,12 @@ param containerPort int
 param containerImageName string
 param containerNamespace string
 param containerRevisionSuffix string // 0.1.25
-param containerRegistrySubscriptionId string
 
-param containerRegistry string // mimeocommon-acr
-param containerRegistryResourceGroup string
+param containerRegistryUri string //ghcr.io
+param containerRegistryUsername string
+
+#disable-next-line secure-secrets-in-params
+param containerRegistryPassword string
 
 param useExternalIngress bool = true
 
@@ -29,10 +31,6 @@ param containerAppProductionRevision string
 // Variables
 // -----------
 var containerAppEnvironmentId = resourceId('Microsoft.App/managedEnvironments', containerAppEnvironmentName)
-var containerRegistryId = resourceId(containerRegistrySubscriptionId, containerRegistryResourceGroup, 'Microsoft.ContainerRegistry/registries', containerRegistry)
-var containerRegistryUsername = listCredentials(containerRegistryId, '2022-02-01-preview').username
-var containerRegistryPassword = listCredentials(containerRegistryId, '2022-02-01-preview').passwords[0].value
-var containerRegistryUri = '${containerRegistry}.azurecr.io'
 var containerImage = '${containerRegistryUri}/${containerNamespace}/${containerImageName}:${containerRevisionSuffix}'
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2019-06-01').keys[0].value};EndpointSuffix=core.windows.net'
 

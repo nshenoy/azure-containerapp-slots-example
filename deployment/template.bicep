@@ -7,9 +7,12 @@ param containerPort int = 8080
 param containerImageName string
 param containerNamespace string
 param containerRevisionSuffix string
-param containerRegistry string
-param containerRegistryResourceGroup string
-param containerRegistrySubscriptionId string
+param containerRegistryUri string
+param containerRegistryUsername string
+
+#disable-next-line secure-secrets-in-params
+param containerRegistryPassword string
+
 param containerAppProductionRevision string = 'none'
 
 param resourceLocation string = resourceGroup().location
@@ -40,9 +43,9 @@ module containerAppExisting 'containerApp.bicep' = {
     containerRevisionSuffix: containerRevisionSuffix
     containerAppProductionRevision: containerAppProductionRevision
     containerPort: containerPort
-    containerRegistry: containerRegistry
-    containerRegistryResourceGroup: containerRegistryResourceGroup
-    containerRegistrySubscriptionId: containerRegistrySubscriptionId
+    containerRegistryUri: containerRegistryUri
+    containerRegistryUsername: containerRegistryUsername
+    containerRegistryPassword: containerRegistryPassword
     SomeSection__SomeSensitiveString: SomeSection__SomeSensitiveString
     SomeSection__SomeOtherSetting: SomeSection__SomeOtherSetting
     storageAccountName: storageAccountName

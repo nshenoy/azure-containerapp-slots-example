@@ -17,14 +17,14 @@
     "containerRevisionSuffix": {
       "value": "#{containerRevisionSuffix}"
     },
-    "containerRegistry": {
-      "value": "#{containerRegistry}"
+    "containerRegistryUri": {
+      "value": "#{containerRegistryUri}"
     },
-    "containerRegistryResourceGroup": {
-      "value": "#{containerRegistryResourceGroup}"
+    "containerRegistryUsername": {
+      "value": "#{containerRegistryUsername}"
     },
-    "containerRegistrySubscriptionId": {
-      "value": "#{containerRegistrySubscriptionId}"
+    "containerRegistryPassword": {
+      "value": "#{containerRegistryPassword}"
     },
     "containerAppProductionRevision": {
       "value": "#{containerAppProductionRevision}"

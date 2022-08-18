@@ -110,7 +110,7 @@ jobs:
     - name: Set Staging Label on Latest Revision
       uses: azure/powershell@v1
       with:
-        inlineScript: .\Set-ContainerAppLabel.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
+        inlineScript: .\Set-ContainerAppStagingLabel.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
         azPSVersion: latest
       if: ${{ false }}
 
@@ -134,7 +134,7 @@ jobs:
     - name: Get Revision with Production Label
       uses: azure/powershell@v1
       with:
-        inlineScript: .\Swap-Revisions.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
+        inlineScript: .\Swap-ContainerAppRevisions.ps1 -resourceGroupName ${{ secrets.Azure.ResourceGroupName }} -containerAppName ${{ secrets.Azure.ContainerAppName }}
         azPSVersion: latest
       if: ${{ false }}
       
