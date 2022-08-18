@@ -7,7 +7,7 @@ env:
   containerRegistryUsername: ${{ github.repository_owner }}
   containerRegistryPassword: ${{ secrets.GITHUB_TOKEN }}
   containerImageName: example-api
-  containerImageTag: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ jobs.build.outputs.semver }}
+  containerImageTag: $containerRegistryUri/${{ github.repository_owner }}/$containerImageName:${{ jobs.build.outputs.semver }}
 
 jobs:
   build:
