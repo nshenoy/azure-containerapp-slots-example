@@ -87,13 +87,14 @@ jobs:
       containerAppEnvName: ${{ secrets.CONTAINERAPPENVNAME }}
       containerImageTag: ${{ secrets.CONTAINERREGISTRYURI }}/${{ github.repository_owner }}/${{ secrets.CONTAINERIMAGENAME }}:${{ needs.build.outputs.semver }}
       storageAccountName: ${{ secrets.STORAGEACCOUNTNAME }}
-      SomeSection__SomeSensitiveString: ${{ secrets.SomeSection__SomeSensitiveString }}
-      SomeSection__SomeOtherSetting: ${{ secrets.SomeSection__SomeOtherSetting }}
+      SomeSection__SomeSensitiveString: ${{ secrets.SOMESECTION__SOMESENSITIVESTRING }}
+      SomeSection__SomeOtherSetting: SomeArbitraryValueWhatevs
 
     steps:
 
     - name: Dump GitHub context
       run: echo '${{ toJSON(github) }}'
+      if: ${{ false }}
 
     - name: Download artifacts
       uses: actions/download-artifact@v3
@@ -114,7 +115,7 @@ jobs:
           $productionRevision = ( .\Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }} )
           echo ::set-output name=containerAppProductionRevision::$( $productionRevision )
         azPSVersion: latest
-      if: ${{ false }}
+      if: ${{ true }}
 
     - name: Replace Tokens in parameters.json
       uses: cschleiden/replace-tokens@v1.1
