@@ -127,11 +127,10 @@ jobs:
     - name: Azure Template Deployment
       uses: azure/arm-deploy@v1
       with:
-        resourceGroupName: ${{ secrets.Azure.ResourceGroupName }}
+        resourceGroupName: ${{ env.resourceGroupName }}
         template: ./template.json
         parameters: ./parameters.json
         deploymentMode: Incremental
-      if: ${{ false }}
 
     - name: Set Staging Label on Latest Revision
       uses: azure/powershell@v1
@@ -146,8 +145,8 @@ jobs:
     environment: production
 
     env:
-      resourceGroupName: ${{ secrets.AZURE_RESOURCEGROUP }}
-      containerAppName: ${{ secrets.AZURE_CONTAINERAPP }}
+      resourceGroupName: ${{ secrets.RESOURCEGROUPNAME }}
+      containerAppName: ${{ secrets.CONTAINERAPPNAME }}
 
     steps:
     - name: Download artifacts
