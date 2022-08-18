@@ -113,7 +113,7 @@ jobs:
       with:
         inlineScript: |
           $productionRevision = ( .\Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }} )
-          echo ::set-output name=containerAppProductionRevision::$( $productionRevision )
+          echo "containerAppProductionRevision=$productionRevision" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         azPSVersion: latest
       if: ${{ true }}
 
