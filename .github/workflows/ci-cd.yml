@@ -7,7 +7,7 @@ env:
   containerRegistryUsername: ${{ github.repository_owner }}
   containerRegistryPassword: ${{ secrets.GITHUB_TOKEN }}
   containerImageName: example-api
-  containerImageTag: $containerRegistryUri/${{ github.repository_owner }}/$containerImageName:${{ jobs.build.outputs.semver }}
+  containerImageTag: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ jobs.build.outputs.semver }}
 
 jobs:
   build:
@@ -71,7 +71,7 @@ jobs:
         file: ./Dockerfile
         context: .
         platforms: linux/amd64,linux/arm64
-        tags: ${{ env.containerImageTag }}
+        tags: ${{ containerRegistryUri }}/${{ github.repository_owner }}/${{ containerImageName }}:${{ steps.gitversion.outputs.semver }}
         build-args: |
           version=${{ steps.gitversion.outputs.semVer }}
         cache-from: type=gha
@@ -87,6 +87,8 @@ jobs:
       containerAppName: ${{ secrets.CONTAINERAPPNAME }}
       containerAppEnvName: ${{ secrets.CONTAINERAPPENVNAME }}
       containerAppProductionRevision: ${{ steps.getProductionRevision.outputs.productionRevision }}
+      containerImageTag: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ needs.build.outputs.semver }}
+      containerImageName: 
       storageAccountName: ${{ secrets.STORAGEACCOUNTNAME }}
       SomeSection__SomeSensitiveString: ${{ secrets.SomeSection__SomeSensitiveString }}
       SomeSection__SomeOtherSetting: ${{ secrets.SomeSection__SomeOtherSetting }}
