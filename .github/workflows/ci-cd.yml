@@ -70,7 +70,7 @@ jobs:
         file: ./Dockerfile
         context: .
         platforms: linux/amd64,linux/arm64
-        tags: ${{ containerRegistryUri }}/${{ github.repository_owner }}/${{ containerImageName }}:${{ steps.gitversion.outputs.semver }}
+        tags: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ steps.gitversion.outputs.semver }}
         build-args: |
           version=${{ steps.gitversion.outputs.semVer }}
         cache-from: type=gha
