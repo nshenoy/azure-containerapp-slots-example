@@ -85,7 +85,7 @@ jobs:
       resourceGroupName: ${{ secrets.RESOURCEGROUPNAME }}
       containerAppName: ${{ secrets.CONTAINERAPPNAME }}
       containerAppEnvName: ${{ secrets.CONTAINERAPPENVNAME }}
-      containerImageTag: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ needs.build.outputs.semver }}
+      containerImageTag: $containerRegistryUri/${{ github.repository_owner }}/$containerImageName:${{ needs.build.outputs.semver }}
       storageAccountName: ${{ secrets.STORAGEACCOUNTNAME }}
       SomeSection__SomeSensitiveString: ${{ secrets.SomeSection__SomeSensitiveString }}
       SomeSection__SomeOtherSetting: ${{ secrets.SomeSection__SomeOtherSetting }}
