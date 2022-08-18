@@ -3,10 +3,10 @@ name: CI/CD
 on: [push, workflow_dispatch]
 
 env:
-  containerRegistryUri: ghcr.io
+  containerRegistryUri: ${{ secrets.CONTAINERREGISTRYURI }}
   containerRegistryUsername: ${{ github.repository_owner }}
   containerRegistryPassword: ${{ secrets.GITHUB_TOKEN }}
-  containerImageName: example-api
+  containerImageName: ${{ secrets.CONTAINERIMAGENAME }}
 
 jobs:
   build:
@@ -85,7 +85,7 @@ jobs:
       resourceGroupName: ${{ secrets.RESOURCEGROUPNAME }}
       containerAppName: ${{ secrets.CONTAINERAPPNAME }}
       containerAppEnvName: ${{ secrets.CONTAINERAPPENVNAME }}
-      containerImageTag: $containerRegistryUri/${{ github.repository_owner }}/$containerImageName:${{ needs.build.outputs.semver }}
+      containerImageTag: ${{ secrets.CONTAINERREGISTRYURI }}/${{ github.repository_owner }}/${{ secrets.CONTAINERIMAGENAME }}:${{ needs.build.outputs.semver }}
       storageAccountName: ${{ secrets.STORAGEACCOUNTNAME }}
       SomeSection__SomeSensitiveString: ${{ secrets.SomeSection__SomeSensitiveString }}
       SomeSection__SomeOtherSetting: ${{ secrets.SomeSection__SomeOtherSetting }}
