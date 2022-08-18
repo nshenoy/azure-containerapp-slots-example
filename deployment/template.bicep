@@ -49,4 +49,7 @@ module containerAppExisting 'containerApp.bicep' = {
     storageAccountName: storageAccountName
     location: resourceLocation
   }
+  dependsOn: [
+    storage
+  ]
 }
