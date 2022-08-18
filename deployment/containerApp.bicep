@@ -17,7 +17,7 @@ param useExternalIngress bool = true
 
 param storageAccountName string
 
-param location string
+param resourceLocation string = resourceGroup().location
 
 // Configuration parameters
 param SomeSection__SomeSensitiveString string
@@ -37,7 +37,7 @@ var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName
 // -----------
 resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   name: containerAppName
-  location: location
+  location: resourceLocation
   identity: {
     type: 'SystemAssigned'
   }

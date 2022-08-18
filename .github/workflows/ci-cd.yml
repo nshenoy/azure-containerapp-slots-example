@@ -38,11 +38,11 @@ jobs:
         useConfigFile: true
         configFilePath: ./GitVersion.yml
     
-    - name: bicep build template.bicep
+    - name: bicep build containerApp.bicep
       uses: Azure/bicep-build-action@v1.0.1
       with:
-        bicepFilePath: ./deployment/template.bicep
-        outputFilePath: ./deployment/template.json
+        bicepFilePath: ./deployment/containerApp.bicep
+        outputFilePath: ./deployment/containerApp.json
         
     - name: Upload deployment templates
       uses: actions/upload-artifact@v3.1.0
@@ -117,19 +117,19 @@ jobs:
         azPSVersion: latest
       if: ${{ true }}
 
-    - name: Replace Tokens in parameters.json
+    - name: Replace Tokens in containerApp.parameters.json
       uses: cschleiden/replace-tokens@v1.1
       with:
         tokenPrefix: '#{'
         tokenSuffix: '}'
-        files: 'parameters.json'
+        files: 'containerApp.parameters.json'
         
     - name: Azure Template Deployment
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ env.resourceGroupName }}
-        template: ./template.json
-        parameters: ./parameters.json
+        template: ./containerApp.json
+        parameters: ./containerApp.parameters.json
         deploymentMode: Incremental
 
     - name: Set Staging Label on Latest Revision
