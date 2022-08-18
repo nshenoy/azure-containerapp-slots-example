@@ -11,11 +11,8 @@
     "containerImageName": {
       "value": "#{containerImageName}"
     },
-    "containerNamespace": {
-      "value": "#{containerNamespace}"
-    },
-    "containerRevisionSuffix": {
-      "value": "#{containerRevisionSuffix}"
+    "containerImageTag": {
+      "value": "#{containerImageTag}"
     },
     "containerRegistryUri": {
       "value": "#{containerRegistryUri}"

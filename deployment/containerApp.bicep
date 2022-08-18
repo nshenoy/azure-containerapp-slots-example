@@ -3,10 +3,9 @@
 // -----------
 param containerAppEnvironmentName string
 param containerAppName string
-param containerPort int
 param containerImageName string
-param containerNamespace string
-param containerRevisionSuffix string // 0.1.25
+param containerImageTag string // ghcr.io/username/namespace/containerImageName:tag
+param containerPort int
 
 param containerRegistryUri string //ghcr.io
 param containerRegistryUsername string
@@ -31,7 +30,6 @@ param containerAppProductionRevision string
 // Variables
 // -----------
 var containerAppEnvironmentId = resourceId('Microsoft.App/managedEnvironments', containerAppEnvironmentName)
-var containerImage = '${containerRegistryUri}/${containerNamespace}/${containerImageName}:${containerRevisionSuffix}'
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2019-06-01').keys[0].value};EndpointSuffix=core.windows.net'
 
 // -----------
@@ -93,7 +91,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
     template: {
       containers: [
         {          
-          image: containerImage
+          image: containerImageTag
           name: containerImageName
           env: [
             {

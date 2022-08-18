@@ -5,8 +5,7 @@ param containerAppEnvName string
 param containerAppName string
 param containerPort int = 8080
 param containerImageName string
-param containerNamespace string
-param containerRevisionSuffix string
+param containerImageTag string // ghcr.io/username/namespace/containerImageName:tag
 param containerRegistryUri string
 param containerRegistryUsername string
 
@@ -39,8 +38,7 @@ module containerAppExisting 'containerApp.bicep' = {
     containerAppName: containerAppName
     containerAppEnvironmentName: containerAppEnvName
     containerImageName: containerImageName
-    containerNamespace: containerNamespace
-    containerRevisionSuffix: containerRevisionSuffix
+    containerImageTag: containerImageTag
     containerAppProductionRevision: containerAppProductionRevision
     containerPort: containerPort
     containerRegistryUri: containerRegistryUri
