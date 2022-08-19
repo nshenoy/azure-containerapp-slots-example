@@ -73,8 +73,7 @@ jobs:
         tags: ${{ env.containerRegistryUri }}/${{ github.repository_owner }}/${{ env.containerImageName }}:${{ steps.gitversion.outputs.semver }}
         build-args: |
           version=${{ steps.gitversion.outputs.semVer }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+
         
   staging:
     runs-on: ubuntu-latest
