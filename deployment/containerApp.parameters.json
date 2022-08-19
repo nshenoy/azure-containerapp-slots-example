@@ -29,8 +29,8 @@
     "storageAccountName": {
       "value": "#{storageAccountName}"
     },
-    "SomeSection__SomeSensitiveString": {
-      "value": "#{SomeSection__SomeSensitiveString}"
+    "SomeSection__SomeSensitiveSetting": {
+      "value": "#{SomeSection__SomeSensitiveSetting}"
     },
     "SomeSection__SomeOtherSetting": {
       "value": "#{SomeSection__SomeOtherSetting}"
