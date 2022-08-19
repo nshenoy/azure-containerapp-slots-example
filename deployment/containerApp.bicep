@@ -5,7 +5,7 @@ param containerAppEnvironmentName string
 param containerAppName string
 param containerImageName string
 param containerImageTag string // ghcr.io/username/namespace/containerImageName:tag
-param containerPort int
+param containerPort int = 8080
 
 param containerRegistryUri string //ghcr.io
 param containerRegistryUsername string
@@ -24,7 +24,7 @@ param SomeSection__SomeSensitiveString string
 param SomeSection__SomeOtherSetting string
 
 param containerapp_revision_uniqueid string = newGuid()
-param containerAppProductionRevision string
+param containerAppProductionRevision string = 'none'
 
 // -----------
 // Variables
