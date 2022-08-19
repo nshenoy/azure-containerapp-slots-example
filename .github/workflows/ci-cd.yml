@@ -158,7 +158,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
-    - name: Get Revision with Production Label
+    - name: Swap Staging and Production Revision Labels
       uses: azure/powershell@v1
       with:
         inlineScript: .\Swap-ContainerAppRevisions.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
