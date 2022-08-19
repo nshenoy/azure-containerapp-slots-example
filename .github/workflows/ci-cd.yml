@@ -137,7 +137,6 @@ jobs:
       with:
         inlineScript: .\Set-ContainerAppStagingLabel.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
         azPSVersion: latest
-      if: ${{ false }}
 
   production:
     runs-on: ubuntu-latest
