@@ -20,7 +20,7 @@ param storageAccountName string
 param resourceLocation string = resourceGroup().location
 
 // Configuration parameters
-param SomeSection__SomeSensitiveString string
+param SomeSection__SomeSensitiveSetting string
 param SomeSection__SomeOtherSetting string
 
 param containerapp_revision_uniqueid string = newGuid()
@@ -79,8 +79,8 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
           value: containerRegistryPassword
         }
         {
-          name: 'somesection-somesensitivestring'
-          value: SomeSection__SomeSensitiveString
+          name: 'somesection-somesensitivesetting'
+          value: SomeSection__SomeSensitiveSetting
         }
         {
           name: 'storageaccount-connectionstring'
@@ -95,8 +95,8 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
           name: containerImageName
           env: [
             {
-              name: 'SomeSection__SomeSensitiveString'
-              secretRef: 'somesection-somesensitivestring'
+              name: 'SomeSection__SomeSensitiveSetting'
+              secretRef: 'somesection-somesensitivesetting'
             }
             {
               name: 'SomeSection__SomeOtherSetting'
