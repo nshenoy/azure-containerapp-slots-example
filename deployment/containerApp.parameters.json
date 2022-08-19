@@ -2,8 +2,8 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "containerAppEnvName": {
-      "value": "#{containerAppEnvName}"
+    "containerAppEnvironmentName": {
+      "value": "#{containerAppEnvironmentName}"
     },
     "containerAppName": {
       "value": "#{containerAppName}"
@@ -11,20 +11,17 @@
     "containerImageName": {
       "value": "#{containerImageName}"
     },
-    "containerNamespace": {
-      "value": "#{containerNamespace}"
+    "containerImageTag": {
+      "value": "#{containerImageTag}"
     },
-    "containerRevisionSuffix": {
-      "value": "#{containerRevisionSuffix}"
+    "containerRegistryUri": {
+      "value": "#{containerRegistryUri}"
     },
-    "containerRegistry": {
-      "value": "#{containerRegistry}"
+    "containerRegistryUsername": {
+      "value": "#{containerRegistryUsername}"
     },
-    "containerRegistryResourceGroup": {
-      "value": "#{containerRegistryResourceGroup}"
-    },
-    "containerRegistrySubscriptionId": {
-      "value": "#{containerRegistrySubscriptionId}"
+    "containerRegistryPassword": {
+      "value": "#{containerRegistryPassword}"
     },
     "containerAppProductionRevision": {
       "value": "#{containerAppProductionRevision}"
@@ -32,8 +29,8 @@
     "storageAccountName": {
       "value": "#{storageAccountName}"
     },
-    "SomeSection__SomeSensitiveString": {
-      "value": "#{SomeSection__SomeSensitiveString}"
+    "SomeSection__SomeSensitiveSetting": {
+      "value": "#{SomeSection__SomeSensitiveSetting}"
     },
     "SomeSection__SomeOtherSetting": {
       "value": "#{SomeSection__SomeOtherSetting}"

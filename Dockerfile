@@ -50,4 +50,4 @@ LABEL org.opencontainers.image.title="example-api" \
 
 COPY --from=build /app/publish .
 USER ${appUserName}
-ENTRYPOINT ["dotnet", "Example.Api.dll"]
+ENTRYPOINT ["dotnet", "Example.API.dll"]

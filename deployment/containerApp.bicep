@@ -3,37 +3,33 @@
 // -----------
 param containerAppEnvironmentName string
 param containerAppName string
-param containerPort int
 param containerImageName string
-param containerNamespace string
-param containerRevisionSuffix string // 0.1.25
-param containerRegistrySubscriptionId string
+param containerImageTag string // ghcr.io/username/namespace/containerImageName:tag
+param containerPort int = 8080
 
-param containerRegistry string // mimeocommon-acr
-param containerRegistryResourceGroup string
+param containerRegistryUri string //ghcr.io
+param containerRegistryUsername string
+
+#disable-next-line secure-secrets-in-params
+param containerRegistryPassword string
 
 param useExternalIngress bool = true
 
 param storageAccountName string
 
-param location string
+param resourceLocation string = resourceGroup().location
 
 // Configuration parameters
-param SomeSection__SomeSensitiveString string
+param SomeSection__SomeSensitiveSetting string
 param SomeSection__SomeOtherSetting string
 
 param containerapp_revision_uniqueid string = newGuid()
-param containerAppProductionRevision string
+param containerAppProductionRevision string = 'none'
 
 // -----------
 // Variables
 // -----------
 var containerAppEnvironmentId = resourceId('Microsoft.App/managedEnvironments', containerAppEnvironmentName)
-var containerRegistryId = resourceId(containerRegistrySubscriptionId, containerRegistryResourceGroup, 'Microsoft.ContainerRegistry/registries', containerRegistry)
-var containerRegistryUsername = listCredentials(containerRegistryId, '2022-02-01-preview').username
-var containerRegistryPassword = listCredentials(containerRegistryId, '2022-02-01-preview').passwords[0].value
-var containerRegistryUri = '${containerRegistry}.azurecr.io'
-var containerImage = '${containerRegistryUri}/${containerNamespace}/${containerImageName}:${containerRevisionSuffix}'
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2019-06-01').keys[0].value};EndpointSuffix=core.windows.net'
 
 // -----------
@@ -41,7 +37,7 @@ var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName
 // -----------
 resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   name: containerAppName
-  location: location
+  location: resourceLocation
   identity: {
     type: 'SystemAssigned'
   }
@@ -83,8 +79,8 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
           value: containerRegistryPassword
         }
         {
-          name: 'somesection-somesensitivestring'
-          value: SomeSection__SomeSensitiveString
+          name: 'somesection-somesensitivesetting'
+          value: SomeSection__SomeSensitiveSetting
         }
         {
           name: 'storageaccount-connectionstring'
@@ -95,12 +91,12 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
     template: {
       containers: [
         {          
-          image: containerImage
+          image: containerImageTag
           name: containerImageName
           env: [
             {
-              name: 'SomeSection__SomeSensitiveString'
-              secretRef: 'somesection-somesensitivestring'
+              name: 'SomeSection__SomeSensitiveSetting'
+              secretRef: 'somesection-somesensitivesetting'
             }
             {
               name: 'SomeSection__SomeOtherSetting'

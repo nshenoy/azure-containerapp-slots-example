@@ -16,4 +16,4 @@ if([System.String]::IsNullOrEmpty($productionRevision)) {
     $productionRevision = "none"
 } 
 
-Write-Host "##vso[task.setvariable variable=containerAppProductionRevision;]$productionRevision"
+return $productionRevision
