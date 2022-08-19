@@ -87,7 +87,7 @@ jobs:
       containerAppEnvironmentName: ${{ secrets.CONTAINERAPPENVIRONMENTNAME }}
       containerImageTag: ${{ secrets.CONTAINERREGISTRYURI }}/${{ github.repository_owner }}/${{ secrets.CONTAINERIMAGENAME }}:${{ needs.build.outputs.semver }}
       storageAccountName: ${{ secrets.STORAGEACCOUNTNAME }}
-      SomeSection__SomeSensitiveString: ${{ secrets.SOMESECTION__SOMESENSITIVESTRING }}
+      SomeSection__SomeSensitiveSetting: ${{ secrets.SOMESECTION__SOMESENSITIVESETTING }}
       SomeSection__SomeOtherSetting: SomeArbitraryValueWhatevs
 
     steps:
