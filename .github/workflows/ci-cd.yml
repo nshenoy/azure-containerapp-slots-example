@@ -158,13 +158,11 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
-      if: ${{ false }}
 
     - name: Get Revision with Production Label
       uses: azure/powershell@v1
       with:
         inlineScript: .\Swap-ContainerAppRevisions.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
         azPSVersion: latest
-      if: ${{ false }}
       
         
