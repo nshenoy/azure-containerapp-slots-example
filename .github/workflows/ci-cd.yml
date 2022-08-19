@@ -5,7 +5,7 @@ on: [push, workflow_dispatch]
 env:
   containerRegistryUri: ${{ secrets.CONTAINERREGISTRYURI }}
   containerRegistryUsername: ${{ github.repository_owner }}
-  containerRegistryPassword: ${{ secrets.GITHUB_TOKEN }}
+  containerRegistryPassword: ${{ secrets.CONTAINERREGISTRYPASSWORD }}
   containerImageName: ${{ secrets.CONTAINERIMAGENAME }}
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
       with:
         registry: ${{ env.containerRegistryUri }}
         username: ${{ env.containerRegistryUsername }}
-        password: ${{ env.containerRegistryPassword }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Build & push image
       uses: docker/build-push-action@v2
