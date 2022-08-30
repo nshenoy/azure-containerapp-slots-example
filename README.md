@@ -1,6 +1,6 @@
-# Implementing Staging and Production "Slot Swaps" with Azure Container Apps
+# Implementing Staging -> Production "Slot Swaps" with Azure Container Apps
 
-### *A sample Azure Container App implementation to demonstrate how to simulate something similar to an Azure App Service staging / production slots swaps.*
+#### *A sample Azure Container App implementation to demonstrate how to simulate something similar to an Azure App Service staging / production slots swaps.*
 
 This repo deploys a trivial .NET 6 Web API to an Azure Container Apps instance using GitHub Actions. The workflow will first deploy to a revision labeled as "staging" and then allow the user to promote the revision to "production." This methodology closely mimics the staging/production slot workflow typically used in Azure Web Apps. 
 
@@ -20,7 +20,7 @@ In order to setup the environment and execute our GitHub Actions workflow, we'll
 
 Let's populate these with the following steps:
 
-### 1. `RESOURCEGROUPNAME`
+#### 1. `RESOURCEGROUPNAME`
 We first need to create a resource group:
 ```powershell
 New-AzResourceGroup -Name 'azure-containerapp-slots-example-usea-rg' -Location eastus
@@ -28,12 +28,12 @@ New-AzResourceGroup -Name 'azure-containerapp-slots-example-usea-rg' -Location e
 
 Save the resource group name to an Actions secret called `RESOURCEGROUPNAME` 
 
-### 2. `AZURE_CREDENTIALS`
+#### 2. `AZURE_CREDENTIALS`
 The GitHub Actions workflow will need at least contributor access to the Azure resource group created above. This can be achieved by following the directions here: https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret 
 
 Save the output json of the `az ad sp create-for-rbac` command to a secret called `AZURE_CREDENTIALS`
 
-### 3. `CONTAINERAPPENVNAME` and `STORAGEACCOUNTNAME`
+#### 3. `CONTAINERAPPENVNAME` and `STORAGEACCOUNTNAME`
 If you already have an existing Container App Environment created, populate the `CONTAINERAPPENVNAME` secret with this name. Otherwise, deploy the `./deployment/arm/infrastructure.bicep` template to your resource group. This will create the Container App Environment, Log Analytics Workspace, Application Insights instance, and a storage account.
 
 ```powershell
@@ -47,44 +47,46 @@ New-AzResourceGroupDeployment -ResourceGroupName 'azure-containerapp-slots-examp
 
 Save the `CONTAINERAPPENVNAME` and `STORAGEACCOUNTNAME` as Actions secrets.
 
-### 4. `CONTAINERREGISTRYURI` and `CONTAINERREGISTRYPASSWORD`
+#### 4. `CONTAINERREGISTRYURI` and `CONTAINERREGISTRYPASSWORD`
 Populate these values with your GitHub Packages URI and a GitHub personal access token setup with `read:packages` and `write:packages` permissions. Why use a PAT instead of the built-in [GITHUB_TOKEN](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) secret that's automatically available? The reason is that the workflow for progressing the revision from staging to production may exceed the timeout for the ephemeral token. So while `GITHUB_TOKEN` is suitable (and recommended) for the build step to push the container image to the GitHub Packages repository, the Azure side of things will need a longer lasting token to deal with the deployment stuff.
 
-### 5. `CONTAINERIMAGENAME`
+#### 5. `CONTAINERIMAGENAME`
 This will be the name of the container image that we will build and push to our registry. In this example, we set this to `example-api`
 
-### 6. `CONTAINERAPPNAME`
+#### 6. `CONTAINERAPPNAME`
 The `CONTAINERAPPNAME` secret will be the name of the Azure Container App resource we will create with our Bicep template. In this example, it will be set to `nshenoy-example-api-usea-app`.
 
 
-### 7. `SOMESECTION_SOMESENSITIVESETTING`
+#### 7. `SOMESECTION_SOMESENSITIVESETTING`
 Set this to some arbitrary string. The value will be used in the deployment step to prove that we can update an appSettings.json value with a secret.
 
 ## The Workflow
-Phew, with all of that out of the way, let's get to the actual CI/CD workflow. 
-
 At a high level, the [pipeline yaml](./.github/workflows/ci-cd.yml) looks like this:
 
 ![CI/CD pipeline](./images/ci-cd-pipeline.png)
 
 ### Build Job
 
-The **`build`** job is quite straightforward. It will first do a `bicep build` of the main template to make sure that there aren't obvious errors, and will catch anything nefarious from the linter. The templates and deployment scripts will be published as build artifacts to be used by the deployment stages. Next the container image is built and pushed to our GitHub Packages repository.
+The **`build`** job is quite straightforward. The templates and deployment scripts will be published as build artifacts to be used by the deployment stages. The container image is built and pushed to our GitHub Packages repository.
 
 ### Staging Job
 
-Next we have the **`staging`** job. The first step 
+Next we have the **`staging`** job. The first main step is to run the `Get-ContainerAppProductionRevision.ps1` script to determine if a revision with a `production` label exists.
 ```yaml
+    - name: Get Revision with Production Label
+      id: getProductionRevision
+      uses: azure/powershell@v1
+      with:
         inlineScript: |
           $productionRevision = ( ./scripts/Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }} )
           echo "containerAppProductionRevision=$productionRevision" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 ```
 
-is to run the `Get-ContainerAppProductionRevision.ps1` script to determine if a revision with a `production` label exists. This tells us if we have an existing live app in place, or if this is a fresh (or previously botched) deployment. The output value of the script (either the production revision name or a value of 'none') will become a new environment variable called `containerAppProductionRevision`.
+The script uses `az containerapp ingress show` to determine if there is a revision with a "production" label in place. The script either returns the revision name or a value of 'none' if the label doesn't exist, the output of which will become a new environment variable called `containerAppProductionRevision`.
 
-Next we run a "variable substition" step, which will replace `#{}` based tokens from our `containerApp.parameters.json` template file with environment variables. 
+Next we run a "variable substition" step, which will replace `#{}` based tokens in our `containerApp.parameters.json` template file with environment variables. 
 
-The Bicep template is then deployed. And here we have to do some trickery. The first trick is at the top and bottom of the template where we define our app environment variables
+The Bicep template is then deployed. And here we have to do some trickery. The first trick is the `containerapp_revision_uniqueid` parameter:
 ```bicep
 ...
 param containerapp_revision_uniqueid string = newGuid()
@@ -99,7 +101,7 @@ param containerapp_revision_uniqueid string = newGuid()
             }
 ```
 
-In order to force a [revision-scope change](https://docs.microsoft.com/en-us/azure/container-apps/revisions#revision-scope-changes), we set this `containerapp_revision_uniqueid` variable to a new GUID with each Bicep deployment.
+In order to force a [revision-scope change](https://docs.microsoft.com/en-us/azure/container-apps/revisions#revision-scope-changes), we set this `containerapp_revision_uniqueid` params default value to a new GUID with each Bicep deployment.
 
 The next bit of trickery is setting the ingress properties of the Container App:
 ```bicep
@@ -125,7 +127,7 @@ The next bit of trickery is setting the ingress properties of the Container App:
         transport: 'auto'
       }
 ```
-Here we use a ternary operator to switch behavior off of the `containerAppProductoinRevision` parameter. If the previous `Get-ContainerAppProductionRevision.ps1` step returned a revision name with a production slot, then we have to setup the ingress traffic rules such that `production` remains with 100% of the traffic, but the latest revision we're deploying is set to 0%. In other words, don't mess with the current Production slot. Otherwise, if there was no previous production slot defined, then there's no traffic rules to define (yet). This is the crux of getting this slot-like behavor to work.
+Here we use a ternary operator to switch behavior off of the `containerAppProductoinRevision` parameter. If the previous `Get-ContainerAppProductionRevision.ps1` step returned a revision name with a production label, then we have to setup the ingress traffic rules such that `production` remains with 100% of the traffic, but the latest revision we're deploying is set to 0%. In other words, don't mess with the current Production slot. Otherwise, if there was no previous production slot defined, then there's no traffic rules to define (yet). This is the crux of getting this slot-like behavor to work.
 
 Next we run the `Set-ContainerAppStagingLabel.ps1` script to apply the `staging` label to the latest revision.
 
