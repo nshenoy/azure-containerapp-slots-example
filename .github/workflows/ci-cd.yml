@@ -1,6 +1,10 @@
 name: CI/CD
 
-on: [push, workflow_dispatch]
+on: 
+  push:
+    paths-ignore:
+    - '**.md'
+  workflow_dispatch:
 
 env:
   containerRegistryUri: ${{ secrets.CONTAINERREGISTRYURI }}
@@ -41,8 +45,8 @@ jobs:
     - name: bicep build containerApp.bicep
       uses: Azure/bicep-build-action@v1.0.1
       with:
-        bicepFilePath: ./deployment/containerApp.bicep
-        outputFilePath: ./deployment/containerApp.json
+        bicepFilePath: ./deployment/arm/containerApp.bicep
+        outputFilePath: ./deployment/arm/containerApp.json
         
     - name: Upload deployment templates
       uses: actions/upload-artifact@v3.1.0
@@ -111,7 +115,7 @@ jobs:
       uses: azure/powershell@v1
       with:
         inlineScript: |
-          $productionRevision = ( .\Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }} )
+          $productionRevision = ( ./scripts/Get-ContainerAppProductionRevision.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }} )
           echo "containerAppProductionRevision=$productionRevision" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         azPSVersion: latest
       if: ${{ true }}
@@ -121,20 +125,20 @@ jobs:
       with:
         tokenPrefix: '#{'
         tokenSuffix: '}'
-        files: 'containerApp.parameters.json'
+        files: './arm/containerApp.parameters.json'
         
     - name: Azure Template Deployment
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ env.resourceGroupName }}
-        template: ./containerApp.json
-        parameters: ./containerApp.parameters.json
+        template: ./arm/containerApp.json
+        parameters: ./arm/containerApp.parameters.json
         deploymentMode: Incremental
 
     - name: Set Staging Label on Latest Revision
       uses: azure/powershell@v1
       with:
-        inlineScript: .\Set-ContainerAppStagingLabel.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
+        inlineScript: ./scripts/Set-ContainerAppStagingLabel.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
         azPSVersion: latest
 
   production:
@@ -161,7 +165,7 @@ jobs:
     - name: Swap Staging and Production Revision Labels
       uses: azure/powershell@v1
       with:
-        inlineScript: .\Swap-ContainerAppRevisions.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
+        inlineScript: ./scripts/Swap-ContainerAppRevisions.ps1 -resourceGroupName ${{ env.resourceGroupName }} -containerAppName ${{ env.containerAppName }}
         azPSVersion: latest
       
         
